@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lixm.commonshapebutton.MainActivity">
+
+
+    <com.lixm.commonshapebutton.view.CommonShapeButton
+        android:id="@+id/csb_open_vip"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="点击"
+        android:textColor="#dddddd"
+        app:csb_strokeWidth="2dp"
+        app:csb_startColor="@color/colorPrimary"
+        app:csb_endColor="@color/colorAccent"
+        app:csb_shapeMode="rectangle"
+        app:csb_strokeColor="@color/coloryellow"
+        app:csb_activeEnable="true"
+        android:textSize="16dp"
+        android:visibility="visible"
+        app:csb_cornerPosition="bottomLeft|bottomRight|topLeft|topRight"
+        app:csb_cornerRadius="10dp"
+        app:csb_fillColor="@color/colorAccent"
+        app:csb_pressedColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</android.support.constraint.ConstraintLayout>
