@@ -33,5 +33,7 @@
             <enum name="TOP_BOTTOM" value="0"/>
             <enum name="LEFT_RIGHT" value="1"/>
         </attr>
+        <!-- 文字是否自适应 -->
+        <attr name="csb_text_is_fit" format="boolean"/>
     </declare-styleable>
 </resources>

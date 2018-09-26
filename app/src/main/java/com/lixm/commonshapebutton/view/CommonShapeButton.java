@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
@@ -13,6 +14,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 
 import com.lixm.commonshapebutton.R;
@@ -78,6 +80,13 @@ public class CommonShapeButton extends AppCompatButton {
     //button内容总高度
     private float contentHeight = 0f;
 
+    /**
+     * 文字是否自适应
+     */
+    private boolean mTextIsFit;
+    private Paint mTextPaint;
+    private float mTextSize;
+
     public CommonShapeButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CommonShapeButton);
@@ -93,6 +102,7 @@ public class CommonShapeButton extends AppCompatButton {
         mStartColor = array.getColor(R.styleable.CommonShapeButton_csb_startColor, 0xffffffff);
         mEndColor = array.getColor(R.styleable.CommonShapeButton_csb_endColor, 0xffffffff);
         mOrientation = array.getColor(R.styleable.CommonShapeButton_csb_orientation, 0);
+        mTextIsFit = array.getBoolean(R.styleable.CommonShapeButton_csb_text_is_fit, false);
         array.recycle();
     }
 
@@ -255,5 +265,26 @@ public class CommonShapeButton extends AppCompatButton {
             canvas.translate(0f, (getHeight() - contentHeight) / 2);
         }
         super.onDraw(canvas);
+        refitText(this.getText().toString(), this.getWidth());
+    }
+
+    private void refitText(String text, int textViewWidth) {
+        if (!mTextIsFit || text == null || textViewWidth <= 0) {
+            return;
+        }
+        mTextPaint = new Paint();
+        mTextPaint.set(this.getPaint());
+        int availableTextViewWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+        float[] charsWidthArr = new float[text.length()];
+        Rect boundsRect = new Rect();
+        mTextPaint.getTextBounds(text, 0, text.length(), boundsRect);
+        int textWidth = boundsRect.width();
+        mTextSize = getTextSize();
+        while (textWidth > availableTextViewWidth) {
+            mTextSize -= 1;
+            mTextPaint.setTextSize(mTextSize);
+            textWidth = mTextPaint.getTextWidths(text, charsWidthArr);
+        }
+        this.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
     }
 }

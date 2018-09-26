@@ -3,6 +3,8 @@ package com.lixm.commonshapebutton.view
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
@@ -10,6 +12,7 @@ import android.graphics.drawable.StateListDrawable
 import android.os.Build
 import android.support.v7.widget.AppCompatButton
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.Gravity
 import com.lixm.commonshapebutton.R
 
@@ -79,6 +82,13 @@ class CommonShapeButtonKotlin @JvmOverloads constructor(
     //button内容总高度
     private var contentHeight = 0f
 
+    /**
+     * 文字是否自适应
+     */
+    private var mTextIsFit: Boolean = false
+    private var mTextPaint: Paint? = null
+    private var mTextSize: Float = 0.toFloat()
+
     init {
         context.obtainStyledAttributes(attrs, R.styleable.CommonShapeButton).apply {
             mShapeMode = getInt(R.styleable.CommonShapeButton_csb_shapeMode, 0)
@@ -93,6 +103,7 @@ class CommonShapeButtonKotlin @JvmOverloads constructor(
             mStartColor = getColor(R.styleable.CommonShapeButton_csb_startColor, 0xFFFFFFFF.toInt())
             mEndColor = getColor(R.styleable.CommonShapeButton_csb_endColor, 0xFFFFFFFF.toInt())
             mOrientation = getColor(R.styleable.CommonShapeButton_csb_orientation, 0)
+            mTextIsFit = getBoolean(R.styleable.CommonShapeButton_csb_text_is_fit, false)
             recycle()
         }
     }
@@ -249,6 +260,26 @@ class CommonShapeButtonKotlin @JvmOverloads constructor(
             contentHeight > 0 && (mDrawablePosition == 1 || mDrawablePosition == 3) -> canvas!!.translate(0f, (height - contentHeight) / 2)
         }
         super.onDraw(canvas)
+        refitText(this.text.toString(), this.width)
     }
 
+    private fun refitText(text: String?, textViewWidth: Int) {
+        if (!mTextIsFit || text == null || textViewWidth <= 0) {
+            return
+        }
+        mTextPaint = Paint()
+        mTextPaint!!.set(this.paint)
+        val availableTextViewWidth = width - paddingLeft - paddingRight
+        val charsWidthArr = FloatArray(text.length)
+        val boundsRect = Rect()
+        mTextPaint!!.getTextBounds(text, 0, text.length, boundsRect)
+        var textWidth = boundsRect.width()
+        mTextSize = textSize
+        while (textWidth > availableTextViewWidth) {
+            mTextSize -= 1f
+            mTextPaint!!.setTextSize(mTextSize)
+            textWidth = mTextPaint!!.getTextWidths(text, charsWidthArr)
+        }
+        this.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize)
+    }
 }
